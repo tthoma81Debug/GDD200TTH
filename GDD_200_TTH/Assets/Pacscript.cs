@@ -19,7 +19,7 @@ public class Pacscript : MonoBehaviour
     private bool canJump = false;
     void Start()
     {
-        Debug.Log("Start Ran");
+        Debug.Log("Start Really Did Run");
         rightMovement = new Vector3(5, 0, 0);
         leftMovement = new Vector3(-5, 0, 0);
         upMovement = new Vector3(0, 15, 0);
