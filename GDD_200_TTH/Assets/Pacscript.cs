@@ -12,6 +12,7 @@ public class Pacscript : MonoBehaviour
 
     public Rigidbody2D pacmanPhysicsEngine;
     public Animator woodcutterAnimator;
+    private AudioSource axeSound;
 
     int frameCount = 0;
     int speed = 2;
@@ -29,6 +30,7 @@ public class Pacscript : MonoBehaviour
         pacmanPhysicsEngine = GetComponent<Rigidbody2D>();
         //getting animator
         woodcutterAnimator = GetComponent<Animator>();
+        axeSound = GameObject.Find("AxeSound").GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -93,6 +95,8 @@ public class Pacscript : MonoBehaviour
             //melee attack
             //want to say something like Animation.Play(attack);
             woodcutterAnimator.Play("MeleeAttack");
+            axeSound.Play();
+
 
         }
 
