@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Pacscript : MonoBehaviour
 {
@@ -13,11 +14,15 @@ public class Pacscript : MonoBehaviour
     public Rigidbody2D pacmanPhysicsEngine;
     public Animator woodcutterAnimator;
     private AudioSource axeSound;
+    private Camera actualCamera;
 
     int frameCount = 0;
     int speed = 2;
     float currentDownForce = 0f;
+    bool canMove = true;
     private bool canJump = false;
+    bool coroutineStarted = false;
+    Vector3 clickSpot = new Vector3(0, 0, 0);
     void Start()
     {
         Debug.Log("Start Really Did Run");
@@ -31,11 +36,67 @@ public class Pacscript : MonoBehaviour
         //getting animator
         woodcutterAnimator = GetComponent<Animator>();
         axeSound = GameObject.Find("AxeSound").GetComponent<AudioSource>();
+        actualCamera = GameObject.Find("Camera").GetComponent<Camera>();
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if(Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            //left clicked somehwere
+            Debug.Log("Clicked at position " + Input.mousePosition);
+            clickSpot = actualCamera.ScreenToWorldPoint(Input.mousePosition); //converting to world space
+            //correct the z
+            clickSpot = new Vector3(clickSpot.x, clickSpot.y, 0);
+
+            Debug.Log("which is " + clickSpot + " In world space");
+
+            //start coroutine
+            if(coroutineStarted == false)
+            {
+                StartCoroutine(firstCoroutine());
+                coroutineStarted = true;
+            }
+             
+
+            /*
+            IEnumerator coroutineReference = firstCoroutine();
+            StartCoroutine(coroutineReference);
+            StopCoroutine(coroutineReference);
+            */
+            
+
+        }
+
+        Vector3 distanceVector = clickSpot - this.transform.position;
+
+        /* non physics based movement
+
+        Debug.Log("Distance is " + distanceVector);
+        if (Mathf.Abs(distanceVector.x) >= 1f && Mathf.Abs(distanceVector.y) >= 1f)
+        {
+            // set target
+            this.transform.position = Vector3.MoveTowards(this.transform.position, clickSpot, Time.deltaTime * 5f);
+          
+        }
+        else
+        {
+            //too close on either x or y
+        }
+        
+        */
+
+
+        //physics based movement
+
+        Vector3 direction = distanceVector.normalized;
+        Vector3 moveForce = direction * 3;
+
+        pacmanPhysicsEngine.AddForce(moveForce);
+
+
 
         /*
         if(Input.GetKey(KeyCode.RightArrow))
@@ -122,6 +183,24 @@ public class Pacscript : MonoBehaviour
         {
             //pacman hit the ground
             canJump = true;
+        }
+
+    }
+
+    private void OnMouseUpAsButton()
+    {
+        Debug.Log("you clicked on " + this.gameObject.name);
+    }
+     
+    public IEnumerator firstCoroutine()
+    {
+
+        while(true)
+        {
+            Debug.Log("yaaay. coroutine ran. tick tock");
+            yield return new WaitForSeconds(4);
+            Debug.Log("yaaay. timer is up");
+            SceneManager.LoadScene("Level2");
         }
 
     }
