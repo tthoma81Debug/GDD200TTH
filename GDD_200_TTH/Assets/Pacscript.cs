@@ -15,6 +15,7 @@ public class Pacscript : MonoBehaviour
     public Animator woodcutterAnimator;
     private AudioSource axeSound;
     private Camera actualCamera;
+    private Rigidbody2D zombiePhysics;
 
     int frameCount = 0;
     int speed = 2;
@@ -160,6 +161,37 @@ public class Pacscript : MonoBehaviour
 
 
         }
+        else if(Input.GetKeyDown(KeyCode.C))
+        {
+            //cast a ray
+            Vector2 rayOrigin = new Vector2(this.transform.position.x + 1.5f, this.transform.position.y);
+
+            //apply layer mask
+
+            int theLayerMask = LayerMask.GetMask("enemy");
+
+            RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right, Mathf.Infinity, theLayerMask);
+            Debug.DrawRay(rayOrigin, new Vector3(999,0,0), Color.green, 5);
+
+
+            if (hit == false)
+            {
+                Debug.Log("Cast a ray. Didn't hit anything");
+            }
+            else
+            {
+                Debug.Log("Hit!. Looks like we hit" + hit.transform.gameObject.name);
+
+                //if it is a zombie
+                if(hit.transform.gameObject.name == "zombie")
+                {
+                    Vector3 distance = hit.transform.position - this.transform.position;
+                    Vector3 grappleForce = new Vector3(distance.x * -1, 2, 0);
+                    zombiePhysics = hit.transform.gameObject.GetComponent<Rigidbody2D>();
+                    zombiePhysics.AddForce(grappleForce, ForceMode2D.Impulse);
+                }
+            }
+        }
 
 
         //Debug.Log("Update ran " + frameCount + " Times");
@@ -200,7 +232,7 @@ public class Pacscript : MonoBehaviour
             Debug.Log("yaaay. coroutine ran. tick tock");
             yield return new WaitForSeconds(4);
             Debug.Log("yaaay. timer is up");
-            SceneManager.LoadScene("Level2");
+            //SceneManager.LoadScene("Level2");
         }
 
     }
