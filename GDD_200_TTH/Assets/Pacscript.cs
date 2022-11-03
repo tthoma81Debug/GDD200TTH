@@ -236,4 +236,10 @@ public class Pacscript : MonoBehaviour
         }
 
     }
+
+    public void runWhenClicked(int whichButton)
+    {
+        Debug.Log("yaaaay! button was clicked. which is the button numbered " + whichButton);
+        GameObject.Find("Panel").SetActive(false);
+    }
 }
