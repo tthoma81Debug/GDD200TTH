@@ -122,6 +122,19 @@ public class Pacscript : MonoBehaviour
 
     */
 
+        //controller input
+
+        
+        
+        Debug.Log(Input.GetAxis("Horizontal"));
+        float controllerInput = Input.GetAxis("Horizontal");
+        float speed = 8;
+        float newXInput = controllerInput * speed;
+
+        Vector2 controllerSpeed = new Vector2(newXInput, pacmanPhysicsEngine.velocity.y);
+        pacmanPhysicsEngine.velocity = controllerSpeed;
+        
+
         if (Input.GetKey(KeyCode.RightArrow))
         {
           //  Debug.Log("Right arrow pressed");
